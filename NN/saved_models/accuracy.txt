@@ -1,0 +1,4 @@
+for 00010.h5
+Test loss: 1.3456014320373535
+Test accuracy: 0.5155
+
