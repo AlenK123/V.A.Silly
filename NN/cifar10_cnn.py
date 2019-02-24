@@ -12,6 +12,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import LeakyReLU
 import os
 
 '''
@@ -26,7 +27,7 @@ data_augmentation = True
 num_predictions = 20
 save_dir = os.path.join(os.getcwd(), 'saved_models')
 steps_per_epoch = 25
-model_name = '05000.h5'
+model_name = '00001.h5'
 
 # The data, split between train and test sets:
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
@@ -41,28 +42,28 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 model = Sequential()
 model.add(Conv2D(32, (3, 3), padding='same',
                  input_shape=x_train.shape[1:]))
-model.add(Activation('relu'))
+model.add(LeakyReLU(alpha=0.1))
 model.add(Conv2D(32, (3, 3)))
-model.add(Activation('relu'))
+model.add(LeakyReLU(alpha=0.1))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Dropout(0.0))
 
 model.add(Conv2D(64, (3, 3), padding='same'))
-model.add(Activation('relu'))
+model.add(LeakyReLU(alpha=0.1))
 model.add(Conv2D(64, (3, 3)))
-model.add(Activation('relu'))
+model.add(LeakyReLU(alpha=0.1))
 model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.25))
+model.add(Dropout(0.0))
 
 model.add(Flatten())
 model.add(Dense(512))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
-#model.add(Dense(num_classes))
+model.add(LeakyReLU(alpha=0.1))
+model.add(Dropout(0.0))
+model.add(Dense(num_classes))
 model.add(Activation('softmax'))
 
 # initiate RMSprop optimizer
-opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6)
+opt = keras.optimizers.rmsprop(lr=0.0001, decay=1e-6) #mabey change to Adam-Delta
 
 # Let's train the model using RMSprop
 model.compile(loss='categorical_crossentropy',
