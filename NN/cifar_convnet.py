@@ -6,6 +6,8 @@ See: https://www.bonaccorso.eu/2016/08/06/cifar-10-image-classification-with-ker
  
 from __future__ import print_function
 
+import os
+
 import numpy as np
 
 from keras.callbacks import EarlyStopping
@@ -19,6 +21,15 @@ from keras.utils import to_categorical
 
 # For reproducibility
 np.random.seed(1000)
+
+save_dir = os.path.join(os.getcwd(), 'saved_models')
+'''
+    dropout XXXxx
+    Dense xxxXx
+    leaky relu xxxxX
+'''
+
+model_name = '00000.h5'
 
 if __name__ == '__main__':
     # Load the dataset
@@ -61,3 +72,13 @@ if __name__ == '__main__':
 
     print('Loss: %.3f' % scores[0])
     print('Accuracy: %.3f' % scores[1])
+    
+    # Save model and weights
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+    model_path = os.path.join(save_dir, model_name)
+    model.save(model_path)
+    print('Saved trained model at %s ' % model_path)
+
+    with open(os.path.join(save_dir, "accuracy.txt"), "a") as f:
+        f.write('for ' + model_name + ':\nTest loss: ' + str(scores[0]) + '\nTest accuracy: ' + str(scores[1]) + '\n\n')

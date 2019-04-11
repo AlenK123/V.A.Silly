@@ -10,3 +10,7 @@ for 00001.h5:
 Test loss: 1.3499070905685424
 Test accuracy: 0.5153
 
+for 255100.h5:
+Test loss: 0.6419230633735656
+Test accuracy: 0.7766
+

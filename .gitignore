@@ -9,6 +9,9 @@ __pycache__/
 # Trained models
 *.h5
 
+# junk
+keras.py
+
 # Distribution / packaging
 .Python
 build/
