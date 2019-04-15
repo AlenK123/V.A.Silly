@@ -5,12 +5,15 @@ __pycache__/
 
 # C extensions
 *.so
+*.o
 
 # Trained models
 *.h5
 
 # junk
 keras.py
+.vscode/*
+*.json
 
 # Distribution / packaging
 .Python
