@@ -13,6 +13,7 @@ __pycache__/
 # junk
 keras.py
 .vscode/*
+snippets/*
 *.json
 
 # Distribution / packaging
