@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <vector>
 #include <set>
+#include <functional>
 
 #include <ctime>
 #include <chrono>

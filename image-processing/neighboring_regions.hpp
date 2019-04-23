@@ -3,10 +3,12 @@
 
 class neighboring_regions {
 private:
-    std::pair<cv::Rect, cv::Rect> _regions;
+    cv::Rect r1;
+    cv::Rect r2;
     double _similarity;
 public:
     neighboring_regions(cv::Rect r1, cv::Rect r2);
-    bool operator<(const neighboring_regions &r1);
-    //bool operator<(const neighboring_regions &r);
+    bool operator<(const neighboring_regions &r) const;
+    bool operator>(const neighboring_regions &r) const;
+    bool operator==(const neighboring_regions &r) const; 
 };
