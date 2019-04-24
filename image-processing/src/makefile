@@ -2,10 +2,11 @@
 
 CC = g++
 CFLAGS = `pkg-config --libs --cflags opencv4` -Wall
-#INCLUDE = include
+INCLUDE = ../include
+SRC = build.cpp neighboring_regions.cpp
 
-build:
-	$(CC) build.cpp -o $@ $(CFLAGS)
+build: 
+	$(CC) $(SRC) -o $@ -I$(INCLUDE) $(CFLAGS)
 
 .PHONEY: all build clean
 

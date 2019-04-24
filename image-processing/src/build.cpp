@@ -15,17 +15,20 @@
 #include "neighboring_regions.hpp"
 
 #define HIGHT 256
-#define NEIGHBOR_TH 20
+#define NEIGHBOR_TH (double)70
 
 using namespace cv::ximgproc::segmentation;
 using ssptr = cv::Ptr<SelectiveSearchSegmentation>;
 using rois = std::vector<cv::Rect>;
 using similarity_set = std::set<neighboring_regions>;
 
+
 void prepare_neighboring_rois(rois v, similarity_set &ss);
+double analytical_distance(cv::Rect r1, cv::Rect r2);
 bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j);
 rois find_regions_of_interest(cv::Mat &image, ssptr &ss);
 cv::Mat draw_rois(cv::Mat image, rois v);
+
 
 int main(int argc, char ** argv) { 
     if (argc < 3) {
@@ -55,6 +58,7 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     similarity_set sim_set;
 
     rois v;
+    rois v2;
     ss->setBaseImage(image);
     ss->switchToSelectiveSearchFast();
     ss->process(v);
@@ -67,7 +71,11 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
 
     std::cout << "len: " << sim_set.size() << std::endl;
 
-    return v;
+    for (auto nr : sim_set) {
+        nr.to_vector(v2);
+    }
+
+    return v2;
 }
 
 cv::Mat draw_rois(cv::Mat image, rois v) {
@@ -78,8 +86,12 @@ cv::Mat draw_rois(cv::Mat image, rois v) {
     return out;
 }
 
-bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j) {
-    return (abs(r_i.x - r_j.x) <= NEIGHBOR_TH) && (abs(r_i.y - r_j.y) <= NEIGHBOR_TH);
+double analytical_distance(cv::Rect r1, cv::Rect r2) {
+    return std::sqrt( std::pow(r1.x - r2.x, 2) + std::pow(r1.y - r2.y, 2) );
+}
+
+bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j) { 
+    return analytical_distance(r_i, r_j) <= NEIGHBOR_TH;
 }
 
 void prepare_neighboring_rois(rois v, similarity_set &ss) {
