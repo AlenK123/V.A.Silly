@@ -29,10 +29,13 @@ int main(int argc, char ** argv) {
 
     ssptr ss = createSelectiveSearchSegmentation();
 
-    while (true) {
-        cv::imshow("output", draw_rois(input_im, find_regions_of_interest(input_im, ss)));
-        if (cv::waitKey() == 113) break;
-    }
+    rois R = find_regions_of_interest(input_im, ss);
+    
+    std::cout << R.size() << std::endl;
+    cv::imshow("output", draw_rois(input_im, R));
+
+    while (cv::waitKey() != 113);
+    
     return EXIT_SUCCESS;
 }
 

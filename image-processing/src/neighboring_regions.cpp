@@ -14,6 +14,10 @@ bool neighboring_regions::operator<(const neighboring_regions &r) const {
     return (this->_similarity < r._similarity);
 }
 
+bool neighboring_regions::regards(const neighboring_regions &ins) const {
+    return  (this->r1 == ins.r1 || this->r2 == ins.r2);
+}
+
 double neighboring_regions::calculate_sim(const cv::Mat &image, cv::Rect r1, cv::Rect r2) {
     return color_similarity(image, r1, r2);
 }
@@ -22,7 +26,7 @@ double neighboring_regions::get_sim() const {
     return this->_similarity;
 }
 
-void neighboring_regions::to_vector(std::vector<cv::Rect> &v) {
+void neighboring_regions::to_vector(std::vector<cv::Rect> &v) const {
     /* adding the regions onto a vector */
     v.push_back(this->r1);
     v.push_back(this->r2);

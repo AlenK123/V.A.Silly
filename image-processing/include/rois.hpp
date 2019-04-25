@@ -44,6 +44,14 @@ bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j);
 */
 rois find_regions_of_interest(cv::Mat &image, ssptr &ss);
 
+
+/*
+ * remove similarities regarding s(ri, r\*\), s(rj, r\*\)
+ * **(input: similarity set, neighboring regions instance)**
+ * **(output: void)**
+*/
+void remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins);
+
 /*
  * draws region proposals upon an image
  * **(input: image, region proposals)**
