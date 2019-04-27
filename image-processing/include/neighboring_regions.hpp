@@ -1,11 +1,12 @@
 #pragma once
 #include "opencv2/ximgproc/segmentation.hpp"
 #include "region_similarity.hpp"
+
 #include <vector>
 
 class neighboring_regions {
 private:
-    const cv::Mat image;
+    const cv::Mat &image;
     cv::Rect r1;
     cv::Rect r2;
     double _similarity;
@@ -23,6 +24,7 @@ public:
     bool operator<(const neighboring_regions &r) const;
 
     bool regards(const neighboring_regions &ins) const;
+    bool regards(const cv::Rect &r) const;
     
     double get_sim() const;
     void to_vector(std::vector<cv::Rect> &v) const;

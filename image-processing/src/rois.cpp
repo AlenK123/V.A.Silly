@@ -2,22 +2,24 @@
 
 rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     similarity_set sim_set;
+    similarity_set deleted_nr;
 
     rois v;
-    rois R;
+    rois regions;
+
     ss->setBaseImage(image);
     ss->switchToSelectiveSearchFast();
     ss->process(v);
 
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
-
-    /* TODO: v is the set R in the pdf change it */
-
     prepare_neighboring_rois(image, v, sim_set);
 
+    std::cout << v.size() << std::endl;
+
     /* reduce the region of intrests to relevent regions using cool math cool science */
-    while (!sim_set.empty()) {
+    while (sim_set.empty() == false) {
         rois nr; //get neighboring regions
+
         /* get the highest similarity pair */
         auto s_max = --sim_set.end(); // last member has the heighest two regions similarity so: end() - 1 = last 
         s_max->to_vector(nr);
@@ -31,14 +33,23 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
         );
 
         /* remove similarities regarding ri, rj */
-        remove_instances(sim_set, s_max);
+        deleted_nr = remove_instances(sim_set, s_max);
 
         /* calculate similarity St between t and it's neighbors */
+        for (auto k = deleted_nr.begin(); k != deleted_nr.end(); ++k) {
+            if (k != s_max) {
+                std::vector<cv::Rect> v;
+                k->to_vector(v);
+                cv::Rect n = v[s_max->regards(v[0])];
+                sim_set.emplace(neighboring_regions(image, t, n));
+            }
+        }
         
-        R.push_back(t);
+        std::cout << sim_set.size() << " " << deleted_nr.size() << std::endl;
+        regions.push_back(t);
     }
 
-    return R;
+    return regions;
 }
 
 cv::Mat draw_rois(cv::Mat image, rois v) {
@@ -72,13 +83,16 @@ void prepare_neighboring_rois(const cv::Mat &image, rois v,  similarity_set &ss)
     }
 }
 
-void remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins) {
+similarity_set remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins) {
+    similarity_set s;
     for (auto it = ss.begin(); it != ss.end(); ) {
         if (it->regards(*ins)) {
+            s.emplace(*it);
             ss.erase(it++);
         }
         else {
             ++it;
         }
     }
+    return s;
 }

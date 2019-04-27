@@ -50,7 +50,7 @@ rois find_regions_of_interest(cv::Mat &image, ssptr &ss);
  * **(input: similarity set, neighboring regions instance)**
  * **(output: void)**
 */
-void remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins);
+similarity_set remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins);
 
 /*
  * draws region proposals upon an image
