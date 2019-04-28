@@ -8,12 +8,11 @@
 
 #include "rois.hpp"
 
-
 #define HIGHT 256
 
 int main(int argc, char ** argv) { 
-    if (argc < 3) {
-        std::cerr << argv[0] << " <path> <n threads>" << std::endl;
+    if (argc < 4) {
+        std::cerr << argv[0] << " <path> <n threads> <debug>" << std::endl;
         return EXIT_FAILURE;
     }
     
@@ -31,9 +30,9 @@ int main(int argc, char ** argv) {
 
     rois R = find_regions_of_interest(input_im, ss);
     
-    std::cout << R.size() << std::endl;
-    cv::imshow("output", draw_rois(input_im, R));
+    if (!strcmp(argv[3], "t")) std::cout << "number of region proposals: " << R.size() << std::endl;
 
+    cv::imshow("output", draw_rois(input_im, R));
     while (cv::waitKey() != 113);
     
     return EXIT_SUCCESS;

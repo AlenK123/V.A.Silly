@@ -14,9 +14,9 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
     prepare_neighboring_rois(image, v, sim_set);
 
-    std::cout << v.size() << std::endl;
 
     /* reduce the region of intrests to relevent regions using cool math cool science */
+
     while (sim_set.empty() == false) {
         rois nr; //get neighboring regions
 
@@ -33,7 +33,13 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
         );
 
         /* remove similarities regarding ri, rj */
+        similarity_set last = deleted_nr;
         deleted_nr = remove_instances(sim_set, s_max);
+
+        /* this is not a bug, this is a feature */
+        if (deleted_nr.size() == last.size())  {
+            break;
+        }
 
         /* calculate similarity St between t and it's neighbors */
         for (auto k = deleted_nr.begin(); k != deleted_nr.end(); ++k) {
@@ -44,8 +50,7 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
                 sim_set.emplace(neighboring_regions(image, t, n));
             }
         }
-        
-        std::cout << sim_set.size() << " " << deleted_nr.size() << std::endl;
+
         regions.push_back(t);
     }
 
