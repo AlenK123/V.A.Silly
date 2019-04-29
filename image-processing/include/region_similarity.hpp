@@ -15,3 +15,10 @@
  * **(output: color similarity)**
 */
 double color_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj);
+
+/* 
+ * calculates the texture similarity between to regions 
+ * **(input: image, neighboring regions)**
+ * **(output: color similarity)**
+*/
+double texture_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj);

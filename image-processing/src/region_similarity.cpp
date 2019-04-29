@@ -44,3 +44,8 @@ double color_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj) {
 
     return sum;
 }
+
+double texture_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj) {
+    
+    return 0.0;
+}

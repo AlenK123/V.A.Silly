@@ -16,21 +16,24 @@ int main(int argc, char ** argv) {
         return EXIT_FAILURE;
     }
     
+    bool debug = strcmp(argv[3], "t") == 0;
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);
     
     cv::setNumThreads(std::atoi(argv[2]));
+    /* 
+        this function (from namespace cv::ximgproc::segmentation)
+        takes a long time to run, better put it at the beginning of the main function
+    */
+    ssptr ss = createSelectiveSearchSegmentation();
 
     cv::Mat input_im = cv::imread(argv[1]);
-
     /* resizing the image to a processable size */
     cv::resize(input_im, input_im, cv::Size((input_im.cols * HIGHT / input_im.rows), HIGHT));
 
-    ssptr ss = createSelectiveSearchSegmentation();
-
+    if (debug) std::cout << "starting: ";
     rois R = find_regions_of_interest(input_im, ss);
-    
-    if (!strcmp(argv[3], "t")) std::cout << "number of region proposals: " << R.size() << std::endl;
+    if (debug) std::cout << "number of region proposals: " << R.size() << std::endl;
 
     cv::imshow("output", draw_rois(input_im, R));
     while (cv::waitKey() != 113);
