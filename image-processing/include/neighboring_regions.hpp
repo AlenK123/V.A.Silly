@@ -1,5 +1,5 @@
 #pragma once
-#include "opencv2/ximgproc/segmentation.hpp"
+#include <opencv2/ximgproc/segmentation.hpp>
 #include "region_similarity.hpp"
 
 #include <vector>

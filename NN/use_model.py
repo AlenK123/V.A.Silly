@@ -18,5 +18,3 @@ def predict(image: np.ndarray, x, y, w, h):
     roi = cv2.resize(image[y:(y+h), x:(x + w)], (32, 32)).reshape(-1, 32, 32, 3)
     pred = model.predict(roi)[0]
     return get_class(pred)
-
-
