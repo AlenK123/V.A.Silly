@@ -1,6 +1,7 @@
 #include <Python.h>
 #include <iostream>
 #include <numpy/ndarrayobject.h>
+#include <string>
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/core.hpp"
@@ -34,9 +35,9 @@ py_obj py_func(const char *fname, int argc, cv::Mat image, char **argv) {
     
     npy_intp dimensions[3] = { image.rows, image.cols, image.channels() };
     
-    p_val = PyArray_SimpleNewFromData(image.dims, (npy_intp*)dimensions, NPY_UINT8, image.data);
+    p_val = PyArray_SimpleNewFromData(image.dims + 1, (npy_intp*)dimensions, NPY_UINT8, image.data);
     
-    std::cerr << "error" << std::endl;
+    std::cerr << "did not sigsegv" << std::endl;
     
     PyTuple_SetItem(p_args, 0, p_val);
     
