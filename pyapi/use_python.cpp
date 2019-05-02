@@ -1,16 +1,15 @@
-#include <Python.h>
 #include <iostream>
-#include <numpy/ndarrayobject.h>
 #include <string>
 
-#include "opencv2/highgui.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc.hpp"
+#include <Python.h>
+
+#include <opencv2/highgui.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
 
 #define ARGC 1
 #define ARGV L"use_model"
 #define FNAME "use_model"
-typedef PyObject* py_obj;
 
 void py_init() {
     wchar_t *argv[ARGC] = { ARGV };
@@ -18,36 +17,43 @@ void py_init() {
     PySys_SetArgv(ARGC, argv);
 }
 
-py_obj py_func(const char *fname, int argc, cv::Mat image, char **argv) {
-    py_obj p_val = nullptr,
-    p_module = nullptr,
-    p_func = nullptr,
-    p_data = nullptr,
-    p_args = nullptr;
+PyObject * py_func(char *fname, int argc, cv::Mat image, char **argv) {
+    PyObject * p_val = NULL,
+    *p_module = NULL,
+    *p_func = NULL,
+    *p_data = NULL,
+    *p_args = NULL;
 
-    p_module = PyImport_AddModuleObject(PyUnicode_FromString(FNAME));
+    p_module = PyImport_Import(PyUnicode_FromString(FNAME));
 
-    p_func = PyObject_GetAttrString(p_module, fname);
-    
-    Py_XDECREF(p_module);
+    if (p_module == NULL) { 
+        std::cerr << "err importing module" << std::endl;
+    }
+
+    p_func = PyObject_GetAttrString(p_module, (char*)fname);
+
+    if (p_func == NULL) { 
+        std::cerr << "err getting function" << std::endl;
+    }
 
     p_args = PyTuple_New(1);
+
+    cv::resize(image, image, cv::Size(32, 32));
     
-    npy_intp dimensions[3] = { image.rows, image.cols, image.channels() };
-    
-    p_val = PyArray_SimpleNewFromData(image.dims + 1, (npy_intp*)dimensions, NPY_UINT8, image.data);
-    
-    std::cerr << "did not sigsegv" << std::endl;
+    p_val = Py_BuildValue("(s)", "argument");
     
     PyTuple_SetItem(p_args, 0, p_val);
+
+    if (p_func != NULL) {
+        
+    }
+
+    p_data = PyObject_CallObject(p_func, p_args);   
     
-    p_data = PyObject_CallObject(p_func, p_args);
-    
+    Py_XDECREF(p_module);
     Py_XDECREF(p_val);
     Py_XDECREF(p_args);
     Py_XDECREF(p_func);
-
-    if (p_data == nullptr) std::cerr << "error" << std::endl;
 
     return p_data;
 }
@@ -59,14 +65,17 @@ int main(int argc, char ** argv) {
     }
 
     py_init();
-
     cv::Mat image = cv::imread(argv[1]);
     char **_argv;
 
     try {
-        py_obj a = py_func("check", 0, image, _argv);
+        PyObject * a = py_func("_try", 0, image, _argv);
 
-        std::cout << (a == nullptr) << std::endl;
+        PyObject* str = PyUnicode_AsEncodedString(a, "utf-8", "~E~");
+
+        const char *bytes = PyBytes_AS_STRING(str);
+
+        std::cout << bytes << std::endl;
 
         Py_XDECREF(a);
     }  
