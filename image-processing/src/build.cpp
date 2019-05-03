@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <set>
 
@@ -6,10 +7,10 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <Python.h>
-
 #include "rois.hpp"
 #include "use_python.hpp"
+
+#define CVERRLOG "../../log/log.cverrlog"
 
 #define HIGHT 256
 
@@ -30,16 +31,59 @@ int main(int argc, char ** argv) {
     */
     ssptr ss = createSelectiveSearchSegmentation();
 
+    std::fstream err_log;
+    err_log.open(CVERRLOG);
+
+    rois prediction_rois;
+
+    to_delete_t * tdt = py_init();
+
+
     cv::Mat input_im = cv::imread(argv[1]);
     /* resizing the image to a processable size */
     cv::resize(input_im, input_im, cv::Size((input_im.cols * HIGHT / input_im.rows), HIGHT));
+
+    std::system("cat /dev/null > " CVERRLOG);
+    std::system("clear");
 
     if (debug) std::cout << "starting: ";
     rois R = find_regions_of_interest(input_im, ss);
     if (debug) std::cout << "number of region proposals: " << R.size() << std::endl;
 
-    cv::imshow("output", draw_rois(input_im, R));
+    try {
+        for (auto roi : R) {
+            PyObject * prediction = NULL;
+            try {
+                prediction = predict(
+                    tdt, input_im(
+                    cv::Range(roi.x , roi.x + roi.width), 
+                    cv::Range(roi.y, roi.y + roi.height)
+                    )
+                );
+                std::cout << py_obj_to_string(prediction) << std::endl;
+                Py_XDECREF(prediction);
+                prediction_rois.push_back(roi);
+            }
+            catch (cv::Exception &e) {
+                /* log opencv errors to log*/
+                err_log << e.what() << std::endl;
+            }
+            catch (std::exception &e) {
+                /* present exceptions to console */
+                std::cerr << e.what() << std::endl;
+            }
+        }
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+
+    cv::imshow("output", draw_rois(input_im, prediction_rois));
     while (cv::waitKey() != 113);
+    
+    py_fin(tdt);
+
+    err_log.close();
     
     return EXIT_SUCCESS;
 }

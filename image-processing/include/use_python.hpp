@@ -9,6 +9,7 @@
 #define ARGC 1
 #define ARGV (wchar_t*)L"use_model"
 #define FNAME "use_model"
+#define OUT_PATH "../../images/out.jpg"
 
 typedef struct to_delete {
     PyObject *p_module;

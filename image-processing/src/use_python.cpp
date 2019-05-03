@@ -40,13 +40,24 @@ PyObject * predict(to_delete_t * tdt, cv::Mat image) {
 
     cv::resize(image, image, cv::Size(32, 32));
 
-    cv::imwrite("../images/out.jpg", image);
+    if (cv::imwrite(OUT_PATH, image) == false) {
+        throw std::exception();
+    }
 
     p_val = Py_BuildValue("(s)", "argument");
     
+    if (p_val == NULL) {
+        PyErr_Print();
+        return NULL;
+    }
+
     PyTuple_SetItem(p_args, 0, p_val);
 
     p_data = PyObject_CallObject(tdt->p_func, p_args);   
+
+    if (p_data == NULL) {
+        PyErr_Print();
+    }
 
     Py_XDECREF(p_val);
     Py_XDECREF(p_args);
