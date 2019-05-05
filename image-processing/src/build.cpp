@@ -10,7 +10,7 @@
 #include "rois.hpp"
 #include "use_python.hpp"
 
-#define CVERRLOG "../../log/log.cverrlog"
+#define CVERRLOG "../../.log/log.cverrlog"
 
 #define HIGHT 256
 
@@ -21,10 +21,11 @@ int main(int argc, char ** argv) {
     }
     
     bool debug = strcmp(argv[3], "t") == 0;
+
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);
-    
     cv::setNumThreads(std::atoi(argv[2]));
+    
     /* 
         this function (from namespace cv::ximgproc::segmentation)
         takes a long time to run, better put it at the beginning of the main function
@@ -43,41 +44,41 @@ int main(int argc, char ** argv) {
     /* resizing the image to a processable size */
     cv::resize(input_im, input_im, cv::Size((input_im.cols * HIGHT / input_im.rows), HIGHT));
 
-    std::system("cat /dev/null > " CVERRLOG);
-    std::system("clear");
+    std::system("cat /dev/null > " CVERRLOG " && clear");
 
     if (debug) std::cout << "starting: ";
+
+    /* 
+     * it's always better to set the base image with the real image data rather than a reference or
+     * a copy of it, it solves a lot of nasty errors that just make the algorithm not work to get all
+     * of the potential regions.
+     */
+    ss->setBaseImage(input_im);
+
     rois R = find_regions_of_interest(input_im, ss);
     if (debug) std::cout << "number of region proposals: " << R.size() << std::endl;
 
-    try {
-        for (auto roi : R) {
-            PyObject * prediction = NULL;
-            try {
-                prediction = predict(
-                    tdt, input_im(
-                    cv::Range(roi.x , roi.x + roi.width), 
-                    cv::Range(roi.y, roi.y + roi.height)
-                    )
-                );
+    for (auto roi : R) {
+        PyObject * prediction = NULL;
+        try {
+            prediction = predict(tdt, input_im(roi));
+            if (debug) {
                 std::cout << py_obj_to_string(prediction) << std::endl;
-                Py_XDECREF(prediction);
-                prediction_rois.push_back(roi);
             }
-            catch (cv::Exception &e) {
-                /* log opencv errors to log*/
-                err_log << e.what() << std::endl;
-            }
-            catch (std::exception &e) {
-                /* present exceptions to console */
-                std::cerr << e.what() << std::endl;
-            }
+            Py_XDECREF(prediction);
+            prediction_rois.push_back(roi);
+        }
+        catch (cv::Exception &e) {
+            /* log opencv errors to log*/
+            err_log << e.what() << std::endl;
+        }
+        catch (std::exception &e) {
+            /* log standard exceptions to the console */
+            std::cerr << e.what() << std::endl;
+            break;
         }
     }
-    catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
-    }
-
+    
     cv::imshow("output", draw_rois(input_im, prediction_rois));
     while (cv::waitKey() != 113);
     

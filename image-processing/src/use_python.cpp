@@ -6,8 +6,8 @@ to_delete_t * py_init() {
     wchar_t *argv[ARGC] = { ARGV };
     Py_Initialize();
     PySys_SetArgv(ARGC, argv);
-
-    tdt->p_module = PyImport_Import(PyUnicode_FromString(FNAME));
+    PyObject * m = PyUnicode_FromString(FNAME);
+    tdt->p_module = PyImport_Import(m);
 
     if (tdt->p_module == NULL) {
         PyErr_Print();
@@ -20,7 +20,8 @@ to_delete_t * py_init() {
         PyErr_Print();
         throw std::exception();
     }
-
+    
+    Py_XDECREF(m);
     return tdt;
 }
 

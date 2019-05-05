@@ -19,6 +19,7 @@ private:
     static double calculate_sim(const cv::Mat &image, cv::Rect r1, cv::Rect r2);
 public:
     neighboring_regions(const cv::Mat &_image, cv::Rect r1, cv::Rect r2);
+    
     ~neighboring_regions();
     /* only for sorting neighboring regions on the set where we take the most similar pair */
     bool operator<(const neighboring_regions &r) const;

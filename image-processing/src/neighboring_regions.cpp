@@ -4,7 +4,7 @@ neighboring_regions::neighboring_regions(const cv::Mat &_image, cv::Rect r1, cv:
     this->r1 = r1;
     this->r2 = r2;
     this->_similarity = neighboring_regions::calculate_sim(this->image, r1, r2);
-}
+}    
 
 neighboring_regions::~neighboring_regions() {
     //

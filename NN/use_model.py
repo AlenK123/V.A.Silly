@@ -1,8 +1,6 @@
 from keras import models as km
 import cv2
 from os import environ
-from os import listdir
-import numpy as np
 
 # TODO: order the classes correctly
 
