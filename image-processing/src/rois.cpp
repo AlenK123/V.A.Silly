@@ -14,7 +14,6 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     prepare_neighboring_rois(image, v, sim_set);
 
     /* reduce the region of intrests to relevent regions using cool math cool science */
-     
     while (sim_set.empty() == false) {
         rois nr; //get neighboring regions
 

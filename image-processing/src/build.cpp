@@ -20,7 +20,7 @@ int main(int argc, char ** argv) {
         return EXIT_FAILURE;
     }
     
-    bool debug = strcmp(argv[3], "t") == 0;
+    bool debug = argv[3][0] == 't';
 
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);

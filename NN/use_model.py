@@ -5,7 +5,7 @@ from os import environ
 # TODO: order the classes correctly
 
 OUT_DIR = "../../images/out.jpg"
-catagories = ["airplane", "automobile", "bird", "cat", "deer", "truck", "frog", "horse", "ship", "dog"]
+catagories = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 model = km.load_model("../../NN/saved_models/255100.h5")
 
