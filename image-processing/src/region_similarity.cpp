@@ -48,3 +48,8 @@ double color_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj) {
 double texture_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj) {
     return 0.0;
 }
+
+double size_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj) {
+    // return 1.0 - (size(_ri) + size(_rj)) / size(image)
+    return 1.0 - ( static_cast<double>(_ri.area() + _rj.area()) / (double)(image.size()).area() );
+}

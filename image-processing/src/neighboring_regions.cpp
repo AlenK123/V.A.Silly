@@ -23,7 +23,7 @@ bool neighboring_regions::regards(const cv::Rect &r) const {
 }
 
 double neighboring_regions::calculate_sim(const cv::Mat &image, cv::Rect r1, cv::Rect r2) {
-    return color_similarity(image, r1, r2);
+    return color_similarity(image, r1, r2) + size_similarity(image, r1, r2);
 }
 
 double neighboring_regions::get_sim() const {

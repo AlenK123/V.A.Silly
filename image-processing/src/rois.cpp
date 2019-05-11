@@ -10,6 +10,8 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     ss->switchToSelectiveSearchFast();
     ss->process(v);
 
+    std::cout << "initial region proposals: " << v.size() << std::endl;
+
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
     prepare_neighboring_rois(image, v, sim_set);
 
@@ -33,11 +35,10 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
         similarity_set last = deleted_nr;
         deleted_nr = remove_instances(sim_set, s_max);
 
+
         /* this is not a bug it's a feature */
         if (deleted_nr.size() == last.size()) {
-            for (auto it = last.begin(); it != last.end(); ++it) {
-                remove_instances(deleted_nr, it);
-            }
+            break;
         }
 
         /* calculate similarity St between t and it's neighbors */
