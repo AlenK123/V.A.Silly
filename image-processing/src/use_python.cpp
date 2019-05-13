@@ -11,14 +11,14 @@ to_delete_t * py_init() {
 
     if (tdt->p_module == NULL) {
         PyErr_Print();
-        throw std::exception();
+        throw s_except("Python module " MNAME " doesn\'texist");
     }
 
     tdt->p_func = PyObject_GetAttrString(tdt->p_module, PREDICT_FUNC);
     
     if (tdt->p_func == NULL) {
         PyErr_Print();
-        throw std::exception();
+        throw s_except("Function " FNAME " doesn\'t exist");
     }
     
     Py_XDECREF(m);
@@ -42,7 +42,7 @@ PyObject * predict(to_delete_t * tdt, cv::Mat image) {
     cv::resize(image, image, cv::Size(32, 32));
 
     if (cv::imwrite(OUT_PATH, image) == false) {
-        throw std::exception();
+        throw cv::Exception();
     }
 
     p_val = Py_BuildValue("(s)", "argument");
@@ -70,11 +70,11 @@ const char * py_obj_to_string(PyObject * o) {
 
     PyObject* str = PyUnicode_AsEncodedString(o, "utf-8", "~E~");
     
-    if (str == NULL) throw std::exception();
+    if (str == NULL) throw s_except("Python object not found");
     
     const char *bytes = PyBytes_AS_STRING(str);
 
-    if (bytes == NULL) throw std::exception();
+    if (bytes == NULL) throw s_except("Could not convert str to bytes");
 
     Py_XDECREF(str);
 

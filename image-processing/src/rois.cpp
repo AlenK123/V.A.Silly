@@ -15,6 +15,8 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
     prepare_neighboring_rois(image, v, sim_set);
 
+    std::cout << "number of neighboring regions: " << sim_set.size() << std::endl;
+    
     /* reduce the region of intrests to relevent regions using cool math cool science */
     while (sim_set.empty() == false) {
         rois nr; //get neighboring regions

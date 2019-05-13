@@ -1,7 +1,12 @@
+#include <unistd.h>
+#include <sys/stat.h>
+
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <set>
+
+#include <ctime>
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
@@ -9,6 +14,7 @@
 
 #include "rois.hpp"
 #include "use_python.hpp"
+#include "s_except.hpp"
 
 #define CVERRLOG "../../.log/log.cverrlog"
 
@@ -20,6 +26,14 @@ int main(int argc, char ** argv) {
         return EXIT_FAILURE;
     }
     
+    {
+        struct stat buffer;
+        if (stat (argv[1], &buffer) != 0) {
+            std::cout << "File " << argv[1] << " doesn\'t exist" << std::endl;
+            return EXIT_FAILURE;
+        }
+    }
+
     bool debug = argv[3][0] == 't';
 
     /* optimizing runtime using threads */
@@ -55,7 +69,14 @@ int main(int argc, char ** argv) {
      */
     ss->setBaseImage(input_im);
 
+    std::clock_t start = clock();
+    
     rois R = find_regions_of_interest(input_im, ss);
+    
+    std::clock_t end = clock();
+
+    if (debug) std::cout << "process time: " << (end - start) / CLOCKS_PER_SEC << std::endl;
+
     if (debug) std::cout << "number of region proposals: " << R.size() << std::endl;
 
     for (auto roi : R) {
@@ -67,6 +88,11 @@ int main(int argc, char ** argv) {
             }
             Py_XDECREF(prediction);
             prediction_rois.push_back(roi);
+        }
+        catch (s_except &e) {
+            /* log program errors to console */
+            std::cerr << e.what() << std::endl;
+            break;
         }
         catch (cv::Exception &e) {
             /* log opencv errors to log*/
@@ -88,4 +114,3 @@ int main(int argc, char ** argv) {
     
     return EXIT_SUCCESS;
 }
-

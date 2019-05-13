@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include <s_except.hpp>
 #include "Python.h"
 
 #include <opencv2/highgui.hpp>
@@ -7,6 +7,7 @@
 #include <opencv2/imgproc.hpp>
 
 #define ARGC 1
+#define MNAME "use_model"
 #define ARGV (wchar_t*)L"use_model"
 #define FNAME "use_model"
 #define OUT_PATH "../../images/out.jpg"
