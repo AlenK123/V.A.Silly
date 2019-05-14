@@ -3,11 +3,11 @@
 <h3> Live Video Object Detection and Classification Program.</h3>
 
 <h1> Abstract </h1>
-This project is basically an R-CNN object detection and classification program using a live video feed from the  camera or a video using an object detection engine and a the Cifar100 / Cifar10 neural networks for classification of said objects. <br>
+This project is basically an R-CNN object detection and classification program using a live video feed from the  camera or a video using an object detection engine and a the <a href = 'https://www.cs.toronto.edu/~kriz/cifar.html'>Cifar100/Cifar10</a> neural networks for classification of said objects. <br>
 
-The Neural networks were trained with the **Python** <a href=''> Keras library</a> to attain a Convolutional neural network. <br>
+The Neural networks were trained with the **Python** <a href='https://keras.io'> Keras library</a> to attain a Convolutional neural network. <br>
 
-The largest part of the project is the object detection engine **(C++)** that uses a selective search algorithm to detect objects in the frame of a feed. using <a href=''> OpenCv</a>, we make region proposals and then, by using cool math and cool algorithms we reduce the regions to about less than 10-20% of the initial region proposals to more relevant regions. <a href=''>Sources</a><br>
+The largest part of the project is the object detection engine **(C++)** that uses a selective search algorithm to detect objects in the frame of a feed. using <a href='https://opencv.org/'> OpenCV</a>, we make region proposals and then, by using cool math and cool algorithms we reduce the regions to about less than 10-20% of the initial region proposals to more relevant regions. <a href='http://huppelen.nl/publications/selectiveSearchDraft.pdf'>Sources</a><br>
 
 After gathering all of the regions we take every ROI and send it to the classifier for classification and confidence score of the network. We use only classification where the confidence score is larger than 0.4. so about 40% confidence score is fine in the meantime.<br>
 
