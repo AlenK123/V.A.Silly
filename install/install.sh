@@ -1,2 +1,3 @@
 #!/bin/bash
-ln -s ../NN/use_model.py ../image-processing/src/use_model.py # linking
+ln -s ../../NN/use_model.py ../image-processing/src/use_model.py 
+ln -s ../../NN/use_100_model.py ../image-processing/src/use_100_model.py

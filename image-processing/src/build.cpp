@@ -3,10 +3,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <set>
-
-#include <ctime>
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/core.hpp>
@@ -26,6 +22,7 @@ int main(int argc, char ** argv) {
         return EXIT_FAILURE;
     }
     
+    /* fastest way to check if the file exists */
     {
         struct stat buffer;
         if (stat (argv[1], &buffer) != 0) {
@@ -68,31 +65,22 @@ int main(int argc, char ** argv) {
      * of the potential regions.
      */
     ss->setBaseImage(input_im);
-
-    std::clock_t start = clock();
     
     rois R = find_regions_of_interest(input_im, ss);
-    
-    std::clock_t end = clock();
-
-    if (debug) std::cout << "process time: " << (end - start) / CLOCKS_PER_SEC << std::endl;
 
     if (debug) std::cout << "number of region proposals: " << R.size() << std::endl;
 
-    for (auto roi : R) {
-        PyObject * prediction = NULL;
+    for (auto &roi : R) {
         try {
-            prediction = predict(tdt, input_im(roi));
+            std::pair<const char*, const double> prediction = predict(tdt, input_im(roi));
             if (debug) {
-                std::cout << py_obj_to_string(prediction) << std::endl;
+                std::cout << prediction.first << " : " << prediction.second << std::endl;
             }
-            Py_XDECREF(prediction);
             prediction_rois.push_back(roi);
         }
         catch (s_except &e) {
             /* log program errors to console */
             std::cerr << e.what() << std::endl;
-            break;
         }
         catch (cv::Exception &e) {
             /* log opencv errors to log*/

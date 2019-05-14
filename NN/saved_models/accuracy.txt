@@ -14,3 +14,11 @@ for 255100.h5:
 Test loss: 0.6419230633735656
 Test accuracy: 0.7766
 
+for 00000.h5:
+Test loss: 0.7533746253013611
+Test accuracy: 0.7357
+
+for 100_22511.h5:
+Test loss: 1.7987479852676391
+Test accuracy: 0.539
+
