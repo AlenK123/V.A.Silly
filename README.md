@@ -9,7 +9,7 @@ The Neural networks were trained with the **Python** <a href=''> Keras library</
 
 The largest part of the project is the object detection engine **(C++)** that uses a selective search algorithm to detect objects in the frame of a feed. using <a href=''> OpenCv</a>, we make region proposals and then, by using cool math and cool algorithms we reduce the regions to about less than 10-20% of the initial region proposals to more relevant regions. <a href=''>Sources</a><br>
 
-After gathering all of the regions we take every ROI and send it to the classifier for classification and confidence score of the network. We use only classification where: Let $\theta = confidence(ROI)$, we take results where $\theta >= 0.4$. so about 40% confidence score is fine in the meantime.<br>
+After gathering all of the regions we take every ROI and send it to the classifier for classification and confidence score of the network. We use only classification where the confidence score is larger than 0.4. so about 40% confidence score is fine in the meantime.<br>
 
 After all of these boring stuff we draw a bounding box around the object and write the classification in the bounding box
 
@@ -31,6 +31,6 @@ Then you need to compile the binary using the Makefile
 `cd ../image-processing/src && make` 
 
 ## Dependencies
->**Linux**
->**Python3**: Tensorflow2, Keras, OpenCV, Numpy, H5PY
->**C++**: OpenCV4, Python C/C++ API
+>**Linux** <br>
+>**Python3**: Tensorflow2, Keras, OpenCV, Numpy, H5PY <br>
+>**C++**: OpenCV4, Python C/C++ API <br>
