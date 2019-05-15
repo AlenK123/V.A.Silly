@@ -46,10 +46,9 @@ int main(int argc, char ** argv) {
     std::fstream err_log;
     err_log.open(CVERRLOG);
 
-    rois prediction_rois;
+    std::vector<bounding_box> boxes;
 
     to_delete_t * tdt = py_init();
-
 
     cv::Mat input_im = cv::imread(argv[1]);
     /* resizing the image to a processable size */
@@ -72,15 +71,18 @@ int main(int argc, char ** argv) {
 
     for (auto &roi : R) {
         try {
-            std::pair<const char*, const double> prediction = predict(tdt, input_im(roi));
+            std::pair<const std::string, const double> prediction = predict(tdt, input_im(roi));
             if (debug) {
                 std::cout << prediction.first << " : " << prediction.second << std::endl;
             }
-            prediction_rois.push_back(roi);
+            if (prediction.second >= (double)0.4) {
+                boxes.push_back(bounding_box(roi, prediction.first));
+            }
         }
         catch (s_except &e) {
             /* log program errors to console */
-            std::cerr << e.what() << std::endl;
+            std::cerr << "main: " << e.what() << std::endl;
+            break;
         }
         catch (cv::Exception &e) {
             /* log opencv errors to log*/
@@ -88,12 +90,12 @@ int main(int argc, char ** argv) {
         }
         catch (std::exception &e) {
             /* log standard exceptions to the console */
-            std::cerr << e.what() << std::endl;
+            std::cerr << "main: " << e.what() << std::endl;
             break;
         }
     }
     
-    cv::imshow("output", draw_rois(input_im, prediction_rois));
+    cv::imshow("output", draw_rois(input_im, boxes));
     while (cv::waitKey() != 113);
     
     py_fin(tdt);

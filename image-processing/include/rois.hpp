@@ -15,6 +15,7 @@ using namespace cv::ximgproc::segmentation;
 using ssptr = cv::Ptr<SelectiveSearchSegmentation>;
 using rois = std::vector<cv::Rect>;
 using similarity_set = std::set<neighboring_regions>;
+using bounding_box = std::pair<cv::Rect, const std::string>;
 
 /**
  * takes all of the region proposals and emplaces all of the neighboring regions into a set
@@ -57,4 +58,4 @@ similarity_set remove_instances(similarity_set &ss, std::set<neighboring_regions
  * **(input: image, region proposals)**
  * **(image)**
 */
-cv::Mat draw_rois(cv::Mat image, rois v);
+cv::Mat draw_rois(cv::Mat image, std::vector<bounding_box> v);

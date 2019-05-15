@@ -29,7 +29,7 @@ void py_fin(to_delete_t *tdt) {
     Py_XDECREF(tdt->p_module);
     Py_XDECREF(tdt->p_func);
     delete tdt;
-    Py_Finalize();
+    Py_Finalize(); // causes problems
 }
 
 PyObject * _predict(to_delete_t * tdt) {
@@ -53,7 +53,7 @@ PyObject * _predict(to_delete_t * tdt) {
     return p_data;
 }
 
-std::pair<const char*, const double> predict(to_delete_t * tdt, cv::Mat image) {
+std::pair<const std::string, const double> predict(to_delete_t * tdt, cv::Mat image) {
 
     cv::resize(image, image, cv::Size(32, 32));
 
@@ -65,45 +65,42 @@ std::pair<const char*, const double> predict(to_delete_t * tdt, cv::Mat image) {
 
     if (prediction == NULL) throw s_except("Predict function returned error value");
 
-    PyObject * str = PyTuple_GetItem(prediction, 0);
+    if (PyTuple_Size(prediction) < 2) {
+        Py_XDECREF(prediction);
+        throw s_except("Predict function returned error value");
+    }
+
+    PyObject * index = PyTuple_GetItem(prediction, 0);
 
     PyObject * doub = PyTuple_GetItem(prediction, 1);
 
-    if (str == NULL || doub == NULL) throw s_except("Predict function returned error value");
+    if (index == NULL || doub == NULL) throw s_except("Predict function returned error value");
 
-    const char * _str = py_obj_to_string(str);
+    const int _index = py_obj_to_int(index);
     
     const double _doub = py_obj_to_double(doub);
 
-    Py_XDECREF(prediction);
-    Py_XDECREF(str);
-    Py_XDECREF(doub);
-
-    return std::pair<const char *, const double>(_str, _doub);
-}
-
-const char * py_obj_to_string(PyObject * o) {
-
-    if (o == NULL) s_except("Python object is NULL");
-
-    PyObject* str = PyUnicode_AsEncodedString(o, "utf-8", "~E~");
-    
-    if (str == NULL) throw s_except("Python object not found");
-    
-    const char *bytes = PyBytes_AsString(str);
-
-    if (bytes == NULL) {
-        Py_XDECREF(str);    
-        throw s_except("Could not convert str to bytes");
+    std::string _label;
+    {
+        const char * catagories[100] = { CATAGORIES };
+        _label = std::string(catagories[_index]);
     }
 
-    Py_XDECREF(str);
+    Py_XDECREF(prediction);
+    Py_XDECREF(index);
+    Py_XDECREF(doub);
 
-    return bytes;
+    return std::pair<const std::string, const double>(_label, _doub);
+}
+
+const int py_obj_to_int(PyObject  * o) {
+    if (o == NULL) throw s_except("Python object is NULL");
+
+    return PyLong_AsSize_t(o);
 }
 
 const double py_obj_to_double(PyObject * o) {
-    if (o == NULL) s_except("Python object is NULL");
+    if (o == NULL) throw s_except("Python object is NULL");
     
     return PyFloat_AsDouble(o);
 }

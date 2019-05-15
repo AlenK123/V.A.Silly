@@ -6,6 +6,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "s_except.hpp"
+#include "catagories.hpp"
 
 #define ARGC 1
 #define MNAME "use_100_model"
@@ -23,10 +24,10 @@ to_delete_t * py_init();
 
 void py_fin(to_delete_t *tdt);
 
-std::pair<const char*, const double> predict(to_delete_t * tdt, cv::Mat image);
+std::pair<const std::string, const double> predict(to_delete_t * tdt, cv::Mat image);
 
 PyObject * _predict(to_delete_t * tdt);
 
 const double py_obj_to_double(PyObject * o);
 
-const char * py_obj_to_string(PyObject * o);
+const int py_obj_to_int(PyObject * o);

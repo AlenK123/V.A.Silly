@@ -10,12 +10,8 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     ss->switchToSelectiveSearchFast();
     ss->process(v);
 
-    std::cout << "initial region proposals: " << v.size() << std::endl;
-
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
     prepare_neighboring_rois(image, v, sim_set);
-
-    std::cout << "number of neighboring regions: " << sim_set.size() << std::endl;
     
     /* reduce the region of intrests to relevent regions using cool math cool science */
     while (sim_set.empty() == false) {
@@ -59,13 +55,21 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     return regions;
 }
 
-cv::Mat draw_rois(cv::Mat image, rois v) {
+cv::Mat draw_rois(cv::Mat image, std::vector<bounding_box> v) {
     cv::Mat out(image.clone());
 
     /* drawing the regions onto the image */
 
     for (auto it : v) {
-        cv::rectangle(out, it, cv::Scalar(0, 255, 0));
+        cv::rectangle(out, it.first, cv::Scalar(0, 255, 0));
+        cv::putText(
+            out,
+            it.second, 
+            cv::Point(it.first.x, it.first.y), 
+            cv::FONT_HERSHEY_SIMPLEX,
+            0.2,
+            cv::Scalar(0, 0, 255)
+        );
     }
     return out;
 }
