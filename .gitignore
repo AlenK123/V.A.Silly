@@ -15,7 +15,7 @@ keras.py
 .vscode/*
 snippets/*
 images/*
-image-processing/src/use_model.py
+image-processing/src/*.py
 build
 .log/*
 *.txt

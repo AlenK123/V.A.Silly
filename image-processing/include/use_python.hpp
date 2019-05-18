@@ -1,9 +1,6 @@
 #pragma once
 #include <Python.h>
-
-#include <opencv2/highgui.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
+#include <sys/types.h>
 
 #include "s_except.hpp"
 #include "catagories.hpp"
@@ -12,21 +9,17 @@
 #define MNAME "use_100_model"
 #define ARGV (wchar_t*)L"use_100_model"
 #define OUT_PATH "../../images/out.jpg"
-
-typedef struct to_delete {
-    PyObject *p_module;
-    PyObject *p_func;
-} to_delete_t;
-
 #define PREDICT_FUNC "_predict"
 
-to_delete_t * py_init();
+typedef struct to_delete {
+    PyObject *p_func;
+} module_t;
 
-void py_fin(to_delete_t *tdt);
+module_t * py_init();
 
-std::pair<const std::string, const double> predict(to_delete_t * tdt, cv::Mat image);
+void py_fin(module_t *tdt);
 
-PyObject * _predict(to_delete_t * tdt);
+ssize_t _predict(module_t * tdt, int * _index, double * _doub);
 
 const double py_obj_to_double(PyObject * o);
 

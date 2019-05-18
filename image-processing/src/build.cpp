@@ -9,7 +9,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "rois.hpp"
-#include "use_python.hpp"
+#include "model.hpp"
 #include "s_except.hpp"
 
 #define CVERRLOG "../../.log/log.cverrlog"
@@ -31,7 +31,12 @@ int main(int argc, char ** argv) {
         }
     }
 
+    model keras_model; /* initialize the python module */
+
     bool debug = argv[3][0] == 't';
+
+    std::fstream err_log;
+    err_log.open(CVERRLOG);
 
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);
@@ -43,12 +48,7 @@ int main(int argc, char ** argv) {
     */
     ssptr ss = createSelectiveSearchSegmentation();
 
-    std::fstream err_log;
-    err_log.open(CVERRLOG);
-
     std::vector<bounding_box> boxes;
-
-    to_delete_t * tdt = py_init();
 
     cv::Mat input_im = cv::imread(argv[1]);
     /* resizing the image to a processable size */
@@ -71,7 +71,7 @@ int main(int argc, char ** argv) {
 
     for (auto &roi : R) {
         try {
-            std::pair<const std::string, const double> prediction = predict(tdt, input_im(roi));
+            prediction_t prediction = keras_model.predict(input_im(roi));
             if (debug) {
                 std::cout << prediction.first << " : " << prediction.second << std::endl;
             }
@@ -97,8 +97,6 @@ int main(int argc, char ** argv) {
     
     cv::imshow("output", draw_rois(input_im, boxes));
     while (cv::waitKey() != 113);
-    
-    py_fin(tdt);
 
     err_log.close();
     

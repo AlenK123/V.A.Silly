@@ -1,96 +1,84 @@
 #include "use_python.hpp"
 
-to_delete_t * py_init() {
-    to_delete_t *tdt = new to_delete_t;
-    
+module_t * py_init() {
     wchar_t *argv[ARGC] = { ARGV };
     Py_Initialize();
     PySys_SetArgv(ARGC, argv);
+    
     PyObject * m = PyUnicode_FromString(MNAME);
-    tdt->p_module = PyImport_Import(m);
-
-    if (tdt->p_module == NULL) {
-        PyErr_Print();
-        throw s_except("Python module " MNAME " doesn\'t exist");
-    }
-
-    tdt->p_func = PyObject_GetAttrString(tdt->p_module, PREDICT_FUNC);
-    
-    if (tdt->p_func == NULL) {
-        PyErr_Print();
-        throw s_except("Function " PREDICT_FUNC " doesn\'t exist");
-    }
-    
+    PyObject *p_module = PyImport_Import(m);
     Py_XDECREF(m);
+    
+    if (p_module == NULL) {
+        PyErr_Print();
+        return NULL;
+    }
+
+    module_t *tdt = new module_t;
+
+    tdt->p_func = PyObject_GetAttrString(p_module, PREDICT_FUNC);
+    Py_XDECREF(p_module);
+
+    if (tdt->p_func == NULL) {
+        delete tdt;
+        PyErr_Print();
+        return NULL;
+    }
+    
     return tdt;
 }
 
-void py_fin(to_delete_t *tdt) {
-    Py_XDECREF(tdt->p_module);
+void py_fin(module_t *tdt) {
     Py_XDECREF(tdt->p_func);
     delete tdt;
     Py_Finalize(); // causes problems
 }
 
-PyObject * _predict(to_delete_t * tdt) {
-    PyObject *p_data = NULL, *p_args = NULL;
-
+ssize_t _predict(module_t * tdt, int *_index, double *_doub) {
+    PyObject *p_data = NULL, *p_args = NULL, *index, *doub;
+    
     p_args = PyTuple_New(0);
 
     if (p_args == NULL) {
         PyErr_Print();
-        return NULL;
+        return -1;
     }
 
     p_data = PyObject_CallObject(tdt->p_func, p_args);   
+    Py_XDECREF(p_args);
 
     if (p_data == NULL) {
         PyErr_Print();
-    }
-    
-    Py_XDECREF(p_args);
-
-    return p_data;
-}
-
-std::pair<const std::string, const double> predict(to_delete_t * tdt, cv::Mat image) {
-
-    cv::resize(image, image, cv::Size(32, 32));
-
-    if (cv::imwrite(OUT_PATH, image) == false) {
-        throw cv::Exception();
+        return -1;
     }
 
-    PyObject * prediction = _predict(tdt);
-
-    if (prediction == NULL) throw s_except("Predict function returned error value");
-
-    if (PyTuple_Size(prediction) < 2) {
-        Py_XDECREF(prediction);
-        throw s_except("Predict function returned error value");
+    if (PyTuple_Size(p_data) < 2) {
+        Py_XDECREF(p_data);
+        return -1;
     }
 
-    PyObject * index = PyTuple_GetItem(prediction, 0);
-
-    PyObject * doub = PyTuple_GetItem(prediction, 1);
-
-    if (index == NULL || doub == NULL) throw s_except("Predict function returned error value");
-
-    const int _index = py_obj_to_int(index);
-    
-    const double _doub = py_obj_to_double(doub);
-
-    std::string _label;
-    {
-        const char * catagories[100] = { CATAGORIES };
-        _label = std::string(catagories[_index]);
+    if (PyTuple_Size(p_data) < 2) {
+        Py_XDECREF(p_data);
+        return -1;
     }
 
-    Py_XDECREF(prediction);
+    if ((index = PyTuple_GetItem(p_data, 0)) == NULL) {
+        return -1;
+    }
+
+    (*_index) = py_obj_to_int(index);
     Py_XDECREF(index);
-    Py_XDECREF(doub);
 
-    return std::pair<const std::string, const double>(_label, _doub);
+    if ((doub = PyTuple_GetItem(p_data, 1)) == NULL) {  
+        return -1;
+    }
+    
+    (*_doub) = py_obj_to_double(doub);
+    Py_XDECREF(doub);
+    
+    Py_XDECREF(p_data);
+
+    return 0;
 }
 
 const int py_obj_to_int(PyObject  * o) {
