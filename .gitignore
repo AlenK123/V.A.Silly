@@ -11,7 +11,7 @@ __pycache__/
 *.h5
 
 # junk
-keras.py
+NN/saved_models/*
 .vscode/*
 snippets/*
 images/*
