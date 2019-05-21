@@ -18,7 +18,7 @@ def _predict():
         roi = cv2.imread(OUT_DIR).reshape(-1, 32, 32, 3)
         pred = list(model.predict(roi)[0])
         index = get_max_index(pred)
-        return catagories[index], float(pred[index])
+        return index, float(pred[index])
     except Exception as e:
         print(str(e))
         return "label", 0.0

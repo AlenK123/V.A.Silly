@@ -1,9 +1,9 @@
 #!/bin/make
 
 CC = g++
-CFLAGS = `pkg-config --libs --cflags opencv4` -Wall
+CFLAGS = `pkg-config --libs --cflags opencv4` -Wall -O3
 INCLUDE = ../include
-SRC = build.cpp neighboring_regions.cpp rois.cpp region_similarity.cpp use_python.cpp s_except.cpp model.cpp
+SRC = build.cpp neighboring_regions.cpp rois.cpp region_similarity.cpp use_python.cpp s_except.cpp model.cpp detect_objects.cpp
 CFLAGS+=$(shell python3-config --cflags)
 LDFLAGS+=$(shell python3-config --ldflags)
 

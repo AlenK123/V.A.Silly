@@ -11,6 +11,8 @@
 
 #define NEIGHBOR_TH (double)70
 
+#define HIGHT 256
+
 using namespace cv::ximgproc::segmentation;
 using ssptr = cv::Ptr<SelectiveSearchSegmentation>;
 using rois = std::vector<cv::Rect>;
@@ -52,6 +54,15 @@ rois find_regions_of_interest(cv::Mat &image, ssptr &ss);
  * **(output: void)**
 */
 similarity_set remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins);
+
+
+/*
+ * rescales a ROI to a size proportional to the original image
+ * **(input original image, unproportioned ROI)**
+ * **(proportioned ROI)**
+*/
+cv::Rect rescale(cv::Mat &image, cv::Rect roi);
+
 
 /*
  * draws region proposals upon an image

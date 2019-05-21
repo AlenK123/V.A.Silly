@@ -55,19 +55,25 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     return regions;
 }
 
+cv::Rect rescale(cv::Mat &image, cv::Rect roi) {
+    double rl = (HIGHT * image.cols / std::pow(image.rows, 2));
+    return cv::Rect(roi.x / rl, roi.y / rl, 2 * roi.width / rl, 2 * roi.height / rl);
+}
+
 cv::Mat draw_rois(cv::Mat image, std::vector<bounding_box> v) {
     cv::Mat out(image.clone());
 
     /* drawing the regions onto the image */
 
     for (auto it : v) {
-        cv::rectangle(out, it.first, cv::Scalar(0, 255, 0));
+        cv::Rect r = rescale(image, it.first);
+        cv::rectangle(out, r, cv::Scalar(0, 255, 0));
         cv::putText(
             out,
             it.second, 
-            cv::Point(it.first.x, it.first.y), 
+            cv::Point(r.x, r.y), 
             cv::FONT_HERSHEY_SIMPLEX,
-            0.2,
+            0.7,
             cv::Scalar(0, 0, 255)
         );
     }
