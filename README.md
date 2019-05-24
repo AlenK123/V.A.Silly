@@ -20,8 +20,8 @@ Files for the neural network part of the project.
 Source and Header files for the image processing part of the project and a makefile in the <b>src/</b> directory.
 <h3> install/ </h3>
 Script for preparing the executable files.
-<h3> .config/ <h3>
-Home of the config file
+<h3> .config/ </h3>
+Home of the config file.
 
 
 ## Preparing and Compiling 
