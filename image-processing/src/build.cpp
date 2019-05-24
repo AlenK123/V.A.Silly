@@ -5,8 +5,8 @@
 #include "detect_objects.hpp"
 
 int main(int argc, char ** argv) { 
-    if (argc < 4) {
-        std::cerr << argv[0] << " <path> <n threads> <debug>" << std::endl;
+    if (argc < 3) {
+        std::cerr << argv[0] << " <path> <n threads>" << std::endl;
         return EXIT_FAILURE;
     }
     
@@ -19,27 +19,19 @@ int main(int argc, char ** argv) {
         }
     }
 
-    bool debug = argv[3][0] == 't';
-
     model keras_model; /* initialize the python module */
+    const int n_threads = std::atoi(argv[2]);
+    cv::Mat image = cv::imread(argv[1]);
 
     std::system("clear");
 
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);
-    cv::setNumThreads(std::atoi(argv[2]));
+    cv::setNumThreads(n_threads);
     
-    /* 
-     * this function (from namespace cv::ximgproc::segmentation)
-     * takes a long time to run, better put it at the beginning of the main function.
-     */
     ssptr ss = createSelectiveSearchSegmentation();
 
-    cv::Mat image = cv::imread(argv[1]);
-
-    if (debug) std::cout << "init1" << std::endl;
-
-    classifications_t boxes = detect_objects(image, ss, keras_model);
+    classifications_t boxes = detect_objects(image, ss, keras_model, n_threads);
 
     cv::imwrite("../../images/output.jpg", draw_rois(image, boxes));
     

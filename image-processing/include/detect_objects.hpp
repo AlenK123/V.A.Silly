@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <vector>
 
 #include <opencv2/highgui.hpp>
@@ -11,4 +12,4 @@
 
 using classifications_t = std::vector<bounding_box>;
 
-classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model);
+classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model, const int n_threads);

@@ -1,6 +1,6 @@
 #include "rois.hpp"
 
-rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
+rois find_regions_of_interest(cv::Mat &image, ssptr &ss, int n_threads) {
     similarity_set sim_set;
     similarity_set deleted_nr;
 
@@ -11,7 +11,7 @@ rois find_regions_of_interest(cv::Mat& image, ssptr& ss) {
     ss->process(v);
 
     /* prepare all of the neighboring regions of interest and calculate the smilarity between them */
-    prepare_neighboring_rois(image, v, sim_set);
+    prepare_neighboring_rois(image, v, sim_set, n_threads);
     
     /* reduce the region of intrests to relevent regions using cool math cool science */
     while (sim_set.empty() == false) {
@@ -89,14 +89,31 @@ bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j) {
     return analytical_distance(r_i, r_j) <= NEIGHBOR_TH;
 }
 
-void prepare_neighboring_rois(const cv::Mat &image, rois v,  similarity_set &ss) {
-    for (auto r1 : v) {
-        for (auto r2 : v) {
+void _prepare_neighboring_rois(const cv::Mat &image, rois::iterator b, rois::iterator e, similarity_set &ss) {
+    for (auto r1 = b; r1 != e; ++r1) {
+        for (auto r2 = b; r2 != e; ++r2) {
             /* pushing only neighboring regions onto the set */
-            if (are_rois_neighboring(r1, r2)) {
-                ss.emplace(neighboring_regions(image, r1, r2));
+            if (are_rois_neighboring(*r1, *r2)) {
+                ss.emplace(neighboring_regions(image, *r1, *r2));
             }
         }
+    }
+}
+
+void prepare_neighboring_rois(const cv::Mat &image, rois v, similarity_set &ss, const int n_threads) {
+    int add = v.size() / n_threads;
+    rois::iterator begin = v.begin();
+    for (int i = 1; i <= n_threads; i++) {
+        std::thread t(
+            _prepare_neighboring_rois, 
+            std::ref(image), begin + (i - 1) * add, 
+            begin + (i * add),
+            std::ref(ss)
+        );
+        t.join();
+    }
+    if ((v.size() - n_threads * add) != 0) {
+        _prepare_neighboring_rois(image, begin + add * n_threads, v.end(), ss);
     }
 }
 

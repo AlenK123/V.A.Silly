@@ -1,21 +1,20 @@
 from keras import models as km
-
 import cv2
-from os import environ
+import json
 
-# TODO: order the classes correctly
+conf = {}
+with open('../../.config/config.json') as f:
+    conf = json.loads(f.read())
 
-OUT_DIR = "../../images/out.jpg"
-catagories = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
-environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-model = km.load_model("../../NN/saved_models/255100.h5")
+out_dir = '/tmp/out.jpg'
+model = km.load_model(conf['model_path'])
 
 def get_max_index(pred):
     return max(enumerate(pred), key=lambda x: x[1])[0]    
     
 def _predict():
     try:
-        roi = cv2.imread(OUT_DIR).reshape(-1, 32, 32, 3)
+        roi = cv2.imread(out_dir).reshape(-1, 32, 32, 3)
         pred = list(model.predict(roi)[0])
         index = get_max_index(pred)
         return index, float(pred[index])

@@ -6,12 +6,12 @@
 #include "catagories.hpp"
 
 #define ARGC 1
-#define MNAME "use_100_model"
-#define ARGV (wchar_t*)L"use_100_model"
-#define OUT_PATH "../../images/out.jpg"
+#define MNAME "use_model"
+#define ARGV (wchar_t*)L"use_model"
+#define OUT_PATH "/tmp/out.jpg"
 #define PREDICT_FUNC "_predict"
 
-typedef struct to_delete {
+typedef struct module {
     PyObject *p_func;
 } module_t;
 

@@ -1,6 +1,6 @@
 #include "detect_objects.hpp"
 
-classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model) {
+classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model, const int n_threads) {
     std::vector<bounding_box> boxes; 
     cv::Mat input_im(frame);
 
@@ -13,12 +13,8 @@ classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model) 
      * of the potential regions.
      */
     ss->setBaseImage(input_im);
-    
-    std::cout << "init2" << std::endl;
 
-    rois R = find_regions_of_interest(input_im, ss);
-
-    std::cout << "init3" << std::endl;
+    rois R = find_regions_of_interest(input_im, ss, n_threads);
 
     for (auto &roi : R) {
         try {
