@@ -21,7 +21,6 @@ int main(int argc, char ** argv) {
 
     model keras_model; /* initialize the python module */
     const int n_threads = std::atoi(argv[2]);
-    cv::Mat image = cv::imread(argv[1]);
 
     std::system("clear");
 
@@ -31,9 +30,19 @@ int main(int argc, char ** argv) {
     
     ssptr ss = createSelectiveSearchSegmentation();
 
-    classifications_t boxes = detect_objects(image, ss, keras_model, n_threads);
+    cv::VideoCapture cap(0);
 
-    cv::imwrite("../../images/output.jpg", draw_rois(image, boxes));
-    
+    if(!cap.isOpened()) return EXIT_FAILURE;
+    int i = 0;
+    for(cv::Mat frame; cv::waitKey(1) != 'q'; cap >> frame)
+    {   std::cout << i << std::endl;
+        if(!frame.empty()){
+            cv::Mat image(frame);
+            classifications_t boxes = detect_objects(image, ss, keras_model, n_threads);
+            cv::imshow("edges", draw_rois(image, boxes));
+        }
+        i++;
+    }
+
     return EXIT_SUCCESS;
 }

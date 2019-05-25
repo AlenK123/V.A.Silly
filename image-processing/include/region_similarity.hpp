@@ -3,8 +3,6 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-#define BIN_SIZE 25
-
 /* 
  * calculates the color similarity between to regions 
  * **(input: image, neighboring regions)**
@@ -18,7 +16,6 @@ double color_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj);
  * **(output: texture similarity)**
 */
 double texture_similarity(cv::Mat image, cv::Rect _ri, cv::Rect _rj);
-
 
 /* 
  * calculates the size similarity between to regions 

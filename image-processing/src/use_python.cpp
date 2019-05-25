@@ -5,7 +5,7 @@ module_t * py_init() {
     Py_Initialize();
     PySys_SetArgv(ARGC, argv);
     
-    PyObject * m = PyUnicode_FromString(MNAME);
+    PyObject *m = PyUnicode_FromString(MNAME);
     PyObject *p_module = PyImport_Import(m);
     Py_XDECREF(m);
     
@@ -13,45 +13,42 @@ module_t * py_init() {
         PyErr_Print();
         return NULL;
     }
-
-    module_t *tdt = new module_t;
-
-    tdt->p_func = PyObject_GetAttrString(p_module, PREDICT_FUNC);
-    Py_XDECREF(p_module);
-
-    if (tdt->p_func == NULL) {
-        delete tdt;
+    
+    PyObject *p_func = PyObject_GetAttrString(p_module, PREDICT_FUNC);
+    
+    if (p_func == NULL) {
         PyErr_Print();
         return NULL;
     }
     
+
+    module_t *tdt = new module_t;
+    
+    tdt->p_module = p_module;
+    tdt->p_func = p_func;
+
     return tdt;
 }
 
 void py_fin(module_t *tdt) {
+    Py_Finalize(); // causes problems
+    Py_XDECREF(tdt->p_module);
     Py_XDECREF(tdt->p_func);
     delete tdt;
-    PyErr_Print();
-    Py_Finalize(); // causes problems
 }
 
 ssize_t _predict(module_t *tdt, int *_index, double *_doub) {
-    PyObject *index = NULL, *doub = NULL,
-    *p_data = NULL,
-    *p_args = NULL;
+    PyObject *index = NULL, *doub = NULL, *p_data = NULL;
 
-    p_args = PyTuple_New(0);
-
-    p_data = PyObject_CallObject(tdt->p_func, p_args);   
+    p_data = PyObject_CallFunction(tdt->p_func, NULL);
 
     if (p_data == NULL) {
-        Py_XDECREF(p_args);
+        PyErr_Print();
         return -1;    
     }
 
-    Py_XDECREF(p_args);
-
     if ((index = PyTuple_GetItem(p_data, 0)) == NULL) {
+        PyErr_Print();
         return -1;
     }
 
@@ -59,16 +56,16 @@ ssize_t _predict(module_t *tdt, int *_index, double *_doub) {
 
     Py_XDECREF(index);
 
-    if ((doub = PyTuple_GetItem(p_data, 1)) == NULL) {  
+    if ((doub = PyTuple_GetItem(p_data, 1)) == NULL) {
+        PyErr_Print();
         return -1;
     }
-
     (*_doub) = py_obj_to_double(doub);
-
-    Py_XDECREF(doub);
 
     Py_XDECREF(p_data);
 
+    Py_XDECREF(doub);
+    
     return 0;
 }
 

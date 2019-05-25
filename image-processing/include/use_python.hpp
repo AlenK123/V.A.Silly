@@ -13,6 +13,7 @@
 
 typedef struct module {
     PyObject *p_func;
+    PyObject *p_module;
 } module_t;
 
 module_t * py_init();
