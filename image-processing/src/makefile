@@ -11,7 +11,7 @@ SRC = build.cpp neighboring_regions.cpp rois.cpp region_similarity.cpp use_pytho
 
 build: 
 	@$(CC) $(SRC) -o $@ -I$(INCLUDE) $(CFLAGS) $(LDFLAGS)
-	$(info To run use ./build <image path> <number of processing threads>)
+	$(info To run use ./build <media path> <number of processing threads>)
 	
 clean:
-	rm -f build
+	@rm -f build
