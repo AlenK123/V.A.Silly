@@ -1,7 +1,7 @@
 #include "use_python.hpp"
 
 module_t * py_init() {
-    wchar_t *argv[ARGC] = { ARGV };
+    wchar_t *argv[ARGC] = { (wchar_t*)(MODULE_PATH L"/" ARGV) };
     Py_Initialize();
     PySys_SetArgv(ARGC, argv);
     

@@ -7,7 +7,8 @@
 
 #define ARGC 1
 #define MNAME "use_model"
-#define ARGV (wchar_t*)L"use_model"
+#define ARGV L"use_model"
+#define MODULE_PATH L"/home/alenk/Progtop/V.A.Silly/NN"
 #define OUT_PATH "/tmp/out.jpg"
 #define PREDICT_FUNC "_predict"
 

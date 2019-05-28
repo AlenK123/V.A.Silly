@@ -26,7 +26,7 @@ int main(int argc, char ** argv) {
         cap = new cv::VideoCapture(argv[1]);
     } 
     
-    if(!cap->isOpened()) return EXIT_FAILURE;
+    if(cap->isOpened() == false) return EXIT_FAILURE;
     
     const int n_threads = std::atoi(argv[2]);
 
@@ -39,12 +39,14 @@ int main(int argc, char ** argv) {
     cv::setNumThreads(n_threads);
     
     ssptr ss = createSelectiveSearchSegmentation();
-
-    for(cv::Mat frame; cv::waitKey(1) != 'q'; (*cap) >> frame) {
-        if(!frame.empty()) {
+    
+    uchar i = 0;
+    for(cv::Mat frame; cv::waitKey(1) != 'q'; (*cap) >> frame, i++) {
+        if ( frame.empty() == false && (i % 10 == 0) ) {
             cv::Mat image(frame);
+            i = 0;
             classifications_t boxes = detect_objects(image, ss, keras_model, n_threads);
-            cv::imshow("edges", draw_rois(image, boxes));
+            cv::imshow("out", draw_rois(image, boxes));
         }
     }
 
