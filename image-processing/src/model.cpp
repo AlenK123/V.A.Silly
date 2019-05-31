@@ -13,12 +13,8 @@ prediction_t model::predict(cv::Mat image) {
     double _doub = 0.0;
 
     cv::resize(image, image, cv::Size(32, 32));
-
-    if (cv::imwrite(OUT_PATH, image) == false) {
-        throw cv::Exception();
-    }
-
-    if (_predict(tdt, &_index, &_doub) < 0) {
+    
+    if (_predict(tdt, &_index, &_doub, image.data) < 0) {
         throw s_except("Predict function returned error value");
     } 
 

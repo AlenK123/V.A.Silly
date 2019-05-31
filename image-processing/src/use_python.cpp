@@ -1,7 +1,11 @@
 #include "use_python.hpp"
 
 module_t * py_init() {
-    wchar_t *argv[ARGC] = { (wchar_t*)(MODULE_PATH L"/" ARGV) };
+    wchar_t *argv[ARGC] = { 
+        (wchar_t*)(MODULE_PATH L"/" MODEL_NAME),
+        (wchar_t*)JSONCONF
+    };
+    
     Py_Initialize();
     PySys_SetArgv(ARGC, argv);
     
@@ -35,10 +39,16 @@ void py_fin(module_t *tdt) {
     delete tdt;
 }
 
-ssize_t _predict(module_t *tdt, int *_index, double *_doub) {
-    PyObject *index = NULL, *doub = NULL, *p_data = NULL;
+ssize_t _predict(module_t *tdt, int *_index, double *_doub, const u_char * data) {
+    PyObject *index = NULL, *doub = NULL, *p_data = NULL, *bytes = NULL, *args = NULL;
 
-    p_data = PyObject_CallFunction(tdt->p_func, NULL);
+    bytes = PyBytes_FromStringAndSize((char*)data, strlen((char*)data));
+    args = PyTuple_Pack(1, bytes);
+
+    p_data = PyObject_CallObject(tdt->p_func, args);
+
+    Py_XDECREF(args);
+    Py_XDECREF(bytes);
 
     if (p_data == NULL) {
         PyErr_Print();
