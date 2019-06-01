@@ -25,12 +25,12 @@ classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model, 
         }
         catch (s_except &e) {
             /* log program errors to console */
-            std::fprintf(stderr, "detect: %s\n", e.what());
+            std::fprintf(stderr, "[CPP] :: %s\n", e.what());
             break;
         }
         catch (std::exception &e) {
             /* log standard exceptions to the console */
-            std::fprintf(stderr, "detect: %s\n", e.what());
+            std::fprintf(stderr, "[CPP] :: %s\n", e.what());
             break;
         }
     }

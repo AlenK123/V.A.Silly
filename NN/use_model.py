@@ -22,6 +22,6 @@ def predict(binary):
         index = get_max_index(pred) # taking the max prediction
         return index, float(pred[index])
     except Exception as e:
-        print(str(e)) # for debbuging
+        print('[Python] ::', str(e)) # for debbuging
         # the program will ignore the low confidence prediction in a chance of error
         return "label", 0.0 
