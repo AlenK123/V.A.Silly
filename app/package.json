@@ -1,0 +1,20 @@
+{
+  "name": "v.a.silly",
+  "version": "1.0.0",
+  "description": "Object Detection Program",
+  "main": "main.js",
+  "scripts": {
+    "test": "electron .",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlenK123/V.A.Silly.git"
+  },
+  "author": "AlenK123",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlenK123/V.A.Silly/issues"
+  },
+  "homepage": "https://github.com/AlenK123/V.A.Silly#readme"
+}

@@ -18,11 +18,11 @@ images/*
 image-processing/src/*.py
 build
 .log/*
+.config/*
 *.txt
 *.jpg
 *.jpeg
 *.png
-*.json
 
 # Distribution / packaging
 .Python

@@ -23,14 +23,22 @@ classifications_t detect_objects(cv::Mat &frame, ssptr &ss, model &keras_model, 
                 boxes.push_back(bounding_box(roi, prediction.first));
             }
         }
-        catch (s_except &e) {
-            /* log program errors to console */
+        catch (cv::Exception &e) {
+            /* log OpenCV exceptions to log */
             std::fprintf(stderr, "[CPP] :: %s\n", e.what());
+            std::fprintf(stdout, "[CPP] :: %s\n", e.what());
+            break;
+        }
+        catch (s_except &e) {
+            /* log program errors to log */
+            std::fprintf(stderr, "[CPP] :: %s\n", e.what());
+            std::fprintf(stdout, "[CPP] :: %s\n", e.what());
             break;
         }
         catch (std::exception &e) {
-            /* log standard exceptions to the console */
+            /* log standard exceptions to log */
             std::fprintf(stderr, "[CPP] :: %s\n", e.what());
+            std::fprintf(stdout, "[CPP] :: %s\n", e.what());
             break;
         }
     }

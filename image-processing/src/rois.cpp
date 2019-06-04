@@ -42,9 +42,9 @@ rois find_regions_of_interest(cv::Mat &image, ssptr &ss, int n_threads) {
         /* calculate similarity St between t and it's neighbors */
         for (auto k = deleted_nr.begin(); k != deleted_nr.end(); ++k) {
             if (k != s_max) {
-                std::vector<cv::Rect> v;
-                k->to_vector(v);
-                cv::Rect n = v[s_max->regards(v[0])];
+                rois _v;
+                k->to_vector(_v);
+                cv::Rect n = _v[s_max->regards(_v[0])];
                 sim_set.emplace(neighboring_regions(image, t, n));
             }
         }

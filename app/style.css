@@ -1,0 +1,105 @@
+button:hover {
+    background: rgb(245, 245, 245);
+}
+
+button {
+    font-size: 20px;
+    padding: 20px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    display: inline-block;
+    color: #404040;
+    font-weight: 700;
+    letter-spacing: 3px;
+    background: none;
+    -webkit-box-shadow: 0px 5px 40px -7px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: 0px 5px 40px -7px rgba(0, 0, 0, 0.57);
+}
+
+.buttons {
+    margin: 50px;
+}
+
+.input {
+    position: relative;
+    font-size: 0.7em;
+    background: linear-gradient(21deg, #a3a3a3, #383838);
+    padding: 3px;
+    display: inline-block;
+    border-radius: 1000em;
+}
+
+.input *:not(span) {
+    position: relative;
+    display: inherit;
+    border-radius: inherit;
+    margin: 0;
+    border: none;
+    outline: none;
+    padding: 0 .325em;
+    z-index: 1;
+}
+
+.input *:not(span):focus+span {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+.input span {
+    -webkit-transform: scale(0.993, 0.94);
+    transform: scale(0.993, 0.94);
+    transition: opacity .25s, -webkit-transform .5s;
+    transition: transform .5s, opacity .25s;
+    transition: transform .5s, opacity .25s, -webkit-transform .5s;
+    opacity: 0;
+    position: absolute;
+    z-index: 0;
+    margin: 4px;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 3px #fff, 0 0 0 4px #fff, 3px -3px 30px #a3a3a3, -3px 3px 30px #383838;
+}
+
+html {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.5;
+    font-size: 1em;
+}
+
+body {
+    text-align: center;
+    position: fixed;
+    overflow-y: scroll;
+    width: 100%;
+    -webkit-app-region: drag;
+    display: block;
+}
+
+input {
+    font-family: inherit;
+    line-height: inherit;
+    color: #2e3750;
+    min-width: 12em;
+    font-size: 22px;
+}
+
+ ::-webkit-input-placeholder {
+    color: #cbd0d5;
+}
+
+ :-ms-input-placeholder {
+    color: #cbd0d5;
+}
+
+ ::-ms-input-placeholder {
+    color: #cbd0d5;
+}
+
+ ::placeholder {
+    color: #cbd0d5;
+}

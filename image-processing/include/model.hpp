@@ -12,7 +12,6 @@ private:
     module_t * tdt;
     const char * catagories[100] = { CATAGORIES };
 public:
-    
     model();
     ~model();
 
