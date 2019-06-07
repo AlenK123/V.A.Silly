@@ -1,22 +1,25 @@
 <html>
 	<head>
-		<title>Kal</title>
-		<link rel="stylesheet" href="style.css">
-		<script>
-			const path = require('path');
-			var exec = require('child_process').exec;
-
-			function run() {
-				var title = document.getElementById("run-button");
-				var id = exec("neet to shit paths", function(err, stdout, stderr) {
-					console.log("kalil");
-				});
-				title.innerHTML = id;
-			}
-		</script>
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/src.js"></script>
 	</head>
 	<body>
-		<h1 id="run-button"> V.A.Silly </h1>
-		<button onclick="run()">Run</button>
+		<div>
+			<h1 id="run-button">V.A.Silly</h1>
+		</div>
+		<div>
+			<p id="thread-err">
+
+			</p>
+			<p>
+				<span>
+					<input size="10" type="text" id="threads" value="number of threads" onclick="value = null">
+				</span>
+			</p>
+		</div>
+		<div>
+			<button onclick="run()">Run</button>
+		</div>
+
 	</body>
 </html>
