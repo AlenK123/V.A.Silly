@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/AlenK123/V.A.Silly#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "materialize-css": "^1.0.0-rc.2"
   }
 }
