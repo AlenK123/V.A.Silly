@@ -1,25 +1,54 @@
 <html>
 	<head>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.css">
 		<script type="text/javascript" src="js/src.js"></script>
 	</head>
 	<body>
-		<div>
-			<h1 id="run-button">V.A.Silly</h1>
-		</div>
-		<div>
-			<p id="thread-err">
-
-			</p>
-			<p>
-				<span>
-					<input size="10" type="text" id="threads" value="number of threads" onclick="value = null">
+		<div align=center class="row">
+			<div>
+				<h1 id="run-button">V.A.Silly</h1>
+			</div>
+			
+			<div class="input-field inline">
+				<input id="n-threads" type="text">
+				<label id="nthr" onclick="switch_class()" class="" for="n_threads">Number Of threads</label>
+				<span  id="doc" class="helper-text">
+					`Number of procssing threads for the app
 				</span>
-			</p>
-		</div>
-		<div>
-			<button onclick="run()">Run</button>
-		</div>
+			</div>
+			
+			<div class="inline">
+				<div>
+					<span id="file-des">
+						Choose an input scource, Camera or media
+					</span>
+				</div>
+				<br>
+				<div>
+					<a id="file-btn" class="waves-effect waves-light btn-large" onclick="disable_camera_button()">File</a>
+					<a id="cam-btn" class="waves-effect waves-light btn-large" onclick="disable_file_button()">Camera</a>
+				</div>
+			</div>
 
+			<div>
+				<div id="input" class="file-field input-field inline">
+					<div class="btn">
+						<span>File</span>
+						<input type="file">
+					</div>
+					<div class="file-path-wrapper">
+						<input id="file-path" class="file-path validate" type="text" placeholder="upload a file">
+					</div>
+					<span  id="doc-file" class="helper-text">
+						Choose a video file or an image
+					</span>
+				</div>
+			</div>	
+
+			<div>
+				<a id="run-btn" class="waves-effect waves-light btn-large" onclick="run()">Run</a>
+			</div>
+
+		</div>
 	</body>
 </html>

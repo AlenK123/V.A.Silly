@@ -10,7 +10,7 @@ __pycache__/
 # Trained models
 *.h5
 
-# junk
+# dependencies and junk
 NN/saved_models/*
 .vscode/*
 snippets/*
@@ -23,6 +23,8 @@ build
 *.jpg
 *.jpeg
 *.png
+app/css/materialize.css
+app/node_modules/*
 
 # Distribution / packaging
 .Python

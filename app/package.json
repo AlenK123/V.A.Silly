@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/AlenK123/V.A.Silly/issues"
   },
-  "homepage": "https://github.com/AlenK123/V.A.Silly#readme"
+  "homepage": "https://github.com/AlenK123/V.A.Silly#readme",
+  "dependencies": {
+    "materialize-css": "^1.0.0-rc.2"
+  }
 }
