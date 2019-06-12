@@ -2,6 +2,8 @@
 const exec = require('child_process').exec;
 const exists = require('fs').existsSync;
 
+const binary = "VAS_exec";
+
 var media = "0";
 
 function switch_class() {
@@ -52,13 +54,13 @@ function run() {
         media = path.value;
     }
 
-    var run_str = "./build" + " " + media + " " + n_threads;
+    var run_str = "./" + binary + " " + media + " " + n_threads;
 
     run_btn.innerHTML = "Stop";
 
     run_btn.onclick = (function() {
         return function() {
-            exec("pkill build", function(err, stdout, stderr) {
+            exec("pkill " + binary, function(err, stdout, stderr) {
                 console.log(err);
             });
             

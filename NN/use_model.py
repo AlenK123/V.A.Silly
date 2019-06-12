@@ -5,6 +5,9 @@ from sys import argv
 from sys import stderr
 from keras import models as km
 
+with open('../../.log/errlog') as errlog:
+    stderr = errlog
+
 conf = {}
 with open(argv[1]) as f:
     conf = json.loads(f.read())
@@ -20,7 +23,7 @@ def get_max_index(pred):
     
 def predict(binary):
     try:
-        # taknig the correct amount, 32 * 32 * 3 = 3072
+        # taking the correct amount, 32 * 32 * 3 = 3072
         array = np.fromstring(binary, np.uint8)[ : 3072] 
         roi = array.reshape(-1, 32, 32, 3) # reshaping for the NN
         pred = list(model.predict(roi)[0]) # ignoring the np dtype

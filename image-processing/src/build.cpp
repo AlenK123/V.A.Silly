@@ -17,7 +17,7 @@ int main(int argc, char ** argv) {
     int _errfd = 0;
 
     if ((_errfd = open(ERRLOG, O_WRONLY)) < 0) {
-        std::cout << "FATAL: NO LOG FILE" << std::endl;
+        std::cerr << "FATAL: NO LOG FILE" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -33,7 +33,7 @@ int main(int argc, char ** argv) {
         /* fastest way to check if the file exists */    
         struct stat buffer;
         if (stat (argv[1], &buffer) != 0) {
-            std::cout << "File " << argv[1] << " doesn\'t exist" << std::endl;
+            std::cerr << "File " << argv[1] << " doesn\'t exist" << std::endl;
             return EXIT_FAILURE;
         }
 
@@ -46,7 +46,8 @@ int main(int argc, char ** argv) {
 
     model keras_model; /* initialize the python module */
 
-    std::system("cat /dev/null > " ERRLOG);
+    /* hook :) */
+    dup2(_errfd, STDERR_FILENO);
 
     /* optimizing runtime using threads */
     cv::setUseOptimized(true);
@@ -55,7 +56,7 @@ int main(int argc, char ** argv) {
     ssptr ss = createSelectiveSearchSegmentation();
     
     uchar i = 0;
-    for (cv::Mat frame; cv::waitKey(1) != 'q'; (*cap) >> frame, i++) {
+    for (cv::Mat frame; cv::waitKey(1) != 0; (*cap) >> frame, i++) {
         if ( frame.empty() == false && (i % 10 == 0) ) {
             cv::Mat image(frame);
             i = 0;

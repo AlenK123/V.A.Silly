@@ -22,6 +22,8 @@ Source and Header files for the image processing part of the project and a makef
 Script for preparing the executable files.
 <h3> .config/ </h3>
 Home of the config file.
+<h3> .log/ </h3>
+Home of the error log file.
 
 
 ## Preparing and Compiling 
