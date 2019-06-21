@@ -6,6 +6,21 @@ const binary = "VAS_exec";
 
 var media = "0";
 
+
+const ipc = require('electron').ipcRenderer;
+const selectDirBtn = document.getElementById('file-path');
+
+selectDirBtn.addEventListener('click', function (event) {
+    ipc.send('open-file-dialog');
+});
+
+//Getting back the information after selecting the file
+ipc.on('file-path', function (event, path) {
+    //do what you want with the path/file selected, for example:
+    document.getElementById('file-path').value = `${path}`;
+});
+
+
 function switch_class() {
     var elem = document.getElementById("nthr");
     elem.classList.add("active");

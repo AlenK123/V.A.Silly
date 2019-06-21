@@ -2,6 +2,18 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 var exec = require('child_process').exec;
+const ipc = require('electron').ipcMain;
+const dialog = require('electron').dialog;
+
+
+ipc.on('open-file-dialog', function (event) {
+    dialog.showOpenDialog({
+        properties: ['openFile']
+    }, function (files) {
+        if (files) event.sender.send("file-path", files);
+    });
+});
+
 
 const { app, BrowserWindow, Menu, ipcMain, systemPreferences } = electron;
 
