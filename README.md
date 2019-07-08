@@ -1,5 +1,5 @@
 
-#V.A.Silly
+# V.A.Silly
 <h3>Live Video Object Detection and Classification Program.</h3>
 
 <h1>Abstract </h1>
@@ -13,7 +13,7 @@ After gathering all of the regions we take every ROI and send it to the classifi
 
 After all of these boring stuff we draw a bounding box around the object and write the classification in the bounding box
 
-##Files
+## Files
 <h3>NN/ </h3>
 Files for the neural network part of the project.
 <h3>image-processing/ </h3>
@@ -27,7 +27,7 @@ Home of the config file.
 <h3>.log/ </h3>
 Home of the error log file.
 
-##Preparing and Compiling 
+## Preparing and Compiling 
 First you need to link some files to some directories.
 `cd install && . ./install.sh`
 Then you need to compile the binary using the Makefile
@@ -35,10 +35,10 @@ Then you need to compile the binary using the Makefile
 Then you install the app dependencies
 `cd ../../app && npm install`
 
-##Dependencies
+## Dependencies
 >**NodeJs**: Matirealized-css <br>
 >**Python3**: Tensorflow2, Keras, OpenCV, Numpy, H5PY <br>
 >**C++**: OpenCV4, Python C/C++ API <br>
 
-###Notes
+### Notes
 Probably works only for UNIX PC's
