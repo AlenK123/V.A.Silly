@@ -30,20 +30,10 @@
 				</div>
 			</div>
 
-			<div>
-				<form action="#" >
-					<div class="file-field input-field inline">
-						<div class="btn">Browse</span>
-							<input id="file-path-btn" type="file">
-						</div>
-						<div class="file-path-wrapper">
-							<input id="file-path" class="file-path validate" type="text" placeholder="upload a file">
-						</div>
-						<span  id="doc-file" class="helper-text">
-							Choose a video file or an image
-						</span>
-					</div>
-				</form>
+			<div class="inline row">
+				<br>
+				<input onclick="update_file()" type="button" id="file-btn" class="offset-s3 col waves-effect waves-light btn-large" value="Choose a File "/> 
+				<input id="file-path" class="col s4 file-path validate" type="text" placeholder="Choose a file">
 			</div>	
 
 			<div>

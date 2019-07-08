@@ -1,25 +1,36 @@
 
 const exec = require('child_process').exec;
 const exists = require('fs').existsSync;
+const {dialog} = require('electron').remote
 
 const binary = "VAS_exec";
-
 var media = "0";
 
+function update_file() {
+    
+    let options = {
+        title : "Choose Video File", 
 
-const ipc = require('electron').ipcRenderer;
-const selectDirBtn = document.getElementById('file-path');
+        buttonLabel : "Select",
 
-selectDirBtn.addEventListener('click', function (event) {
-    ipc.send('open-file-dialog');
-});
+        filters :[
+         {name: 'Videos', extensions: ['mkv', 'avi', 'mp4']}
+         /*{name: 'Custom File Type', extensions: ['as']},
+         {name: 'All Files', extensions: ['*']}*/
+        ],
+        properties: ['openFile','multiSelections']
+    }
 
-//Getting back the information after selecting the file
-ipc.on('file-path', function (event, path) {
-    //do what you want with the path/file selected, for example:
-    document.getElementById('file-path').value = `${path}`;
-});
-
+    var path = document.getElementById("file-path");
+    dialog.showOpenDialog(options, (filenames) => {
+        if (filenames === undefined) {
+            path.value = "Error accepting file";
+            return;
+        }
+        
+        path.value = filenames[0];
+    })
+}
 
 function switch_class() {
     var elem = document.getElementById("nthr");
@@ -33,7 +44,7 @@ function disable_file_button() {
 
 function disable_camera_button() {
     document.getElementById("cam-btn").classList.add("disabled");
-    media = NaN;
+    media = "";
 }
 
 function run() {
@@ -58,7 +69,7 @@ function run() {
     }
 
 
-    if (isNaN(media)) {
+    if (media != "0") {
         var path = document.getElementById("file-path");
         
         if (!exists(path.value)) {
@@ -70,6 +81,8 @@ function run() {
     }
 
     var run_str = "./" + binary + " " + media + " " + n_threads;
+
+    console.log(run_str);
 
     run_btn.innerHTML = "Stop";
 
