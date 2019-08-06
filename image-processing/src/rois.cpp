@@ -80,19 +80,11 @@ cv::Mat draw_rois(cv::Mat image, std::vector<bounding_box> v) {
     return out;
 }
 
-double analytical_distance(cv::Rect r1, cv::Rect r2) {
-    return std::sqrt(std::pow(r1.x - r2.x, 2) + std::pow(r1.y - r2.y, 2) );
-}
-
-bool are_rois_neighboring(cv::Rect r_i, cv::Rect r_j) {
-    /* two regions are neighboring only if their distance are within some king of threshold */
-    return analytical_distance(r_i, r_j) <= NEIGHBOR_TH;
-}
-
+/*
 void _prepare_neighboring_rois(const cv::Mat &image, rois::iterator b, rois::iterator e, similarity_set &ss) {
     for (auto r1 = b; r1 != e; ++r1) {
         for (auto r2 = b; r2 != e; ++r2) {
-            /* pushing only neighboring regions onto the set */
+            // pushing only neighboring regions onto the set 
             if (are_rois_neighboring(*r1, *r2)) {
                 ss.emplace(neighboring_regions(image, *r1, *r2));
             }
@@ -116,6 +108,26 @@ void prepare_neighboring_rois(const cv::Mat &image, rois v, similarity_set &ss, 
         _prepare_neighboring_rois(image, begin + add * n_threads, v.end(), ss);
     }
 }
+*/
+
+bool intersect(rois::iterator r1, rois::iterator r2) {
+    return ((*r1) & (*r2)).area() != 0;
+}
+
+void prepare_neighboring_rois(const cv::Mat &image, rois v, similarity_set &ss, const int n_threads) {
+    
+    for (auto r1 = v.begin(); r1 != v.end(); ++r1) {
+
+        auto tmp = r1;
+        tmp++;
+        for (auto r2 = tmp; r2 != v.end(); r2++) {
+            if (intersect(r1, r2)) {
+                ss.emplace(neighboring_regions(image, *r1, *r2));
+            }
+        }
+    }
+}
+
 
 similarity_set remove_instances(similarity_set &ss, std::set<neighboring_regions>::iterator ins) {
     similarity_set s;
